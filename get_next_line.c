@@ -6,7 +6,7 @@
 /*   By: pitran <pitran@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 12:37:26 by pitran            #+#    #+#             */
-/*   Updated: 2024/11/21 15:16:41 by pitran           ###   ########.fr       */
+/*   Updated: 2024/11/23 18:49:14 by pitran           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static char	*set_line(char *buffer)
 	return(line_left);
 }
 
-char	*subline(int fd, char *subline, char *buffer)
+char	*subline(int fd, char *line, char *buffer,char **line_left)
 {
 	ssize_t	bread;
 	char	*tmp;
@@ -40,24 +40,31 @@ char	*subline(int fd, char *subline, char *buffer)
     	bread = read(fd, buffer, BUFFER_SIZE);
     	if (bread == -1)
 		{
-			free(subline);
+			free(line);
+			free(*line_left);
+			*line_left = NULL;
    	   		return(NULL);
 		}
 		else if (bread == 0)
+		{
+			free(*line_left);
+			*line_left = NULL;
 			break;
+		}
 		buffer[bread] = '\0';
-		if(!subline)
-			subline = ft_strdup("");
-		tmp = ft_strjoin(subline, buffer);
-		free(subline);
-		subline = tmp;
-		if(!subline)
+		if(!line && bread > 0)
+			line = ft_strdup("");
+		tmp = ft_strjoin(line, buffer);
+		free(line);
+		line = tmp;
+		if(!line)
 			return(NULL);
 		if (ft_strchr(buffer, '\n'))
 			break;
  	}
-	return (subline);
+	return (line);
 }
+
 
 char	*get_next_line(int fd)
 {
@@ -68,7 +75,7 @@ char	*get_next_line(int fd)
 	line = NULL;
 	buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buffer)
-    return(NULL);
+    	return(NULL);
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
   	{
 		free(line_left);
@@ -84,11 +91,32 @@ char	*get_next_line(int fd)
         line_left = NULL;
     }
 	if(!line_left)
-  		line = subline(fd, line, buffer);
+  		line = subline(fd, line, buffer, &line_left);
   	free(buffer);
   	buffer = NULL;
   	if (!line)
-    	return(NULL);
+    	return(NULL); 
  	line_left = set_line(line);
+	if(line[0] == '\0')
+	{
+		free(line);
+		line = NULL;
+	}
   	return(line);
 }
+/*
+int main()
+{
+	int fd = open("multiple_nl.txt", O_RDONLY);
+	int i;
+
+	i = 1;
+	while (i < 10)
+	{
+		printf("Line %d : %s\n", i, get_next_line(fd));
+		i++;
+	}
+	return 0;
+}
+*/
+

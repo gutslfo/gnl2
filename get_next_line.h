@@ -6,7 +6,7 @@
 /*   By: pitran <pitran@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 12:28:51 by pitran            #+#    #+#             */
-/*   Updated: 2024/11/21 13:32:51 by pitran           ###   ########.fr       */
+/*   Updated: 2024/11/22 18:07:52 by pitran           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ size_t      ft_strlen(char *str);
 char        *ft_strdup(char *s);
 char        *ft_substr(char *str, unsigned int start, size_t len);
 char        *ft_strjoin(char *base, char *append);
-char	    *subline(int fd, char *subline, char *buffer);
+char	    *subline(int fd, char *subline, char *buffer, char **line_left);
 char	    *get_next_line(int fd);
 
 #endif
