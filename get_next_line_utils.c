@@ -6,11 +6,12 @@
 /*   By: pitran <pitran@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 12:43:40 by pitran            #+#    #+#             */
-/*   Updated: 2024/11/22 16:49:37 by pitran           ###   ########.fr       */
+/*   Updated: 2024/11/26 13:25:09 by pitran           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
 
 char    *ft_strchr(const char *s, int c)
 {
@@ -30,6 +31,8 @@ size_t  ft_strlen(char *str)
     size_t  i;
     i = 0;
     
+    if(!str)
+        return(0);
     while(str[i])
         i++;
     return i;
@@ -78,27 +81,38 @@ char    *ft_strjoin(char *base, char *append)
 {
     size_t  i;
     size_t  j;
-    size_t  joint_len;
     char    *joint;
     
-    if(!base)
-        return(append);
-    joint_len = ft_strlen(base) + ft_strlen(append);
-    joint = (char *)malloc(sizeof(char) * (joint_len + 1));
+    if(!base || !append)
+        return(!base ? ft_strdup(append) : ft_strdup(base));
+    joint = malloc(sizeof(char) * (ft_strlen(base) + ft_strlen(append) + 1));
     if (!joint)
         return(NULL);
-    i = 0;
-    while (base[i])
-    {
+    i = -1;
+    j = -1;
+    while (base[++i])
         joint[i] = base[i];
+    while (append[++j])
+        joint[i + j] = append[j];
+    joint[i + j] = '\0';
+    return(joint);
+}
+
+void    *ft_memset(void *s, int c, size_t n)
+{
+    unsigned char   *ptr;
+    size_t          i;
+
+    ptr = (unsigned char *)s;
+    i = 0;
+    while (i < n)
+    {
+        ptr[i] = (unsigned char)c;
         i++;
     }
-    j = 0;
-    while (append[j])
-        joint[i++] = append[j++];
-    joint[i] = '\0';
-    return(joint); 
+    return (s);
 }
+
 /*
 int main(void)
 {
